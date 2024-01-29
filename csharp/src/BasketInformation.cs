@@ -14,9 +14,17 @@ namespace shodoReview
         // The product of the basket
         static Dictionary<String, int> map = new Dictionary<string, int>();
 
-        public void AddProductToBasket(string product, int price)
+        // The fact that the basket has promo code
+        private static bool codeDePromotion = false;
+
+        public void AddProductToBasket(string product, int price, bool isPromoCode)
         {
-            map.Add(product, price);
+            if(isPromoCode === true)
+            {
+                codeDePromotion = true;
+            }
+            else
+                map.Add(product, price);
         }
 
         public long GetBasketPrice(bool inCents)
@@ -26,6 +34,11 @@ namespace shodoReview
             {
                 v += map[s];
             }
+            
+            if (codeDePromotion)
+            {
+                v -= 100;
+            }
 
             return inCents ? v * 100 : v;
         }
@@ -33,6 +46,7 @@ namespace shodoReview
         public void ResetBasket()
         {
             BuyBasket();
+            codeDePromotion = false;
         }
 
         public void BuyBasket()
