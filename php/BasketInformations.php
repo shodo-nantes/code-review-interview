@@ -9,20 +9,32 @@ class BasketInformations
     // The product of the basket
     private static array $map = [];
 
-    public function addProductToBasket(string $product, int $price): void
+    // The fact that the basket has promo code
+    private static bool $codeDePromotion = false;
+
+    public function addProductToBasket(string $product, int $price, bool $isPromoCode): void
     {
-        self::$map[$product] = $price;
+        if ($isPromoCode) {
+            self::$codeDePromotion = true;
+        } else {
+            self::$map[$product] = $price;
+        }
     }
 
     public function getBasketPrice(bool $inCents): int
     {
         $v = array_sum(self::$map);
+
+        if (self::$codeDePromotion) {
+            $v -= 100;
+        }
         return $inCents ? $v * 100 : $v;
     }
 
     public function resetBasket(): void
     {
         $this->buyBasket();
+        self::$codeDePromotion = false;
     }
 
     public function buyBasket(): void
